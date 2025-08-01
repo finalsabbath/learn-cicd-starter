@@ -20,15 +20,25 @@ jobs:
 
       - name: Go tests
         run: go test ./... --cover
+
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: gosec test
+        run: gosec ./...
+
   style:
     name: Style
     runs-on: ubuntu-latest
+
     steps:
       - name: Go style check
         run: test -z $(go fmt ./...)
+
       - uses: actions/checkout@v2
         with:
           fetch-depth: 1
+
       - uses: dominikh/staticcheck-action@v1
         with:
           version: "latest"
