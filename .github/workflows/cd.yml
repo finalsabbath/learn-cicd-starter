@@ -17,6 +17,11 @@ jobs:
         with:
           go-version: "1.23.0"
 
+      - name: Create env file
+        run: |
+          touch .env
+          echo API_ENDPOINT="${{ secrets.PORT }}" >> .env
+
       - name: Build
         run: ./scripts/buildprod.sh
 
@@ -32,5 +37,5 @@ jobs:
           version: ">= 416.0.0"
           project_id: "${{ secrets.GCP_PROJECT }}"
 
-      - name: gloud build
-        run: gcloud builds submit --tag us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/notely-ar-repo/pcagan/notely:latest .
+      - name: glcoud build
+        run: gcloud builds submit --region=${{ secrets.GCP_REGION }} --tag ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/notely-ar-repo/pcagan/notely:latest
