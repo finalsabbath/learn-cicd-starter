@@ -18,6 +18,12 @@ jobs:
       - name: Build
         run: ./scripts/buildprod.sh
 
+      - name: Authenticate to Google Cloud
+        id: "auth"
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
       - name: Set up Google Cloud
         uses: "google-github-actions/setup-gcloud@v2"
         with:
