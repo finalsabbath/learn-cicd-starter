@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -32,9 +33,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
-		log.Printf("No PORT environment variable detected, defaulting to %s", port)
-
+		log.Fatal("PORT environment variable is not set")
 	}
 
 	apiCfg := apiConfig{}
@@ -93,9 +92,10 @@ func main() {
 	srv := &http.Server{
 		Addr:              ":" + port,
 		Handler:           router,
-		ReadHeaderTimeout: 10,
+		ReadHeaderTimeout: 5 * time.Second,
 	}
 
 	log.Printf("Serving on port: %s\n", port)
+	println("Visit http://localhost:" + port + " to view the app")
 	log.Fatal(srv.ListenAndServe())
 }
