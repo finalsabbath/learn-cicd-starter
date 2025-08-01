@@ -33,4 +33,7 @@ jobs:
           project_id: "${{ secrets.GCP_PROJECT }}"
 
       - name: glcoud build
-        run: gcloud builds submit --region=${{ secrets.GCP_REGION }} --tag ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/notely-ar-repo/pcagan/notely:latest
+        run: gcloud builds submit --region=${{ secrets.GCP_REGION }} --tag ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.REPO_NAME }}/notely:latest
+
+      - name: Deploy to Cloud Run
+        run: gcloud run deploy notely --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.REPO_NAME }}/notely:latest --region ${{ secrets.GCP_REGION }} --allow-unauthenticated --project ${{ secrets.GCP_PROJECT }} --max-instances=4
