@@ -5,6 +5,10 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
     permissions:
       contents: "read"
       id-token: "write"
@@ -16,6 +20,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.23.0"
+
+      - name: Setup Goose
+        run: go install github.com/pressly/goose/v3/cmd/goose@latest
 
       - name: Build
         run: ./scripts/buildprod.sh
@@ -34,6 +41,9 @@ jobs:
 
       - name: gcloud build
         run: gcloud builds submit --region=${{ secrets.GCP_REGION }} --tag ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.REPO_NAME }}/notely:latest
+
+      - name: Migrateup
+        run: ./scripts/migrateup.sh
 
       - name: Deploy to Cloud Run
         run: gcloud run deploy notely --image ${{ secrets.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.REPO_NAME }}/notely:latest --region ${{ secrets.GCP_REGION }} --allow-unauthenticated --project ${{ secrets.GCP_PROJECT }} --max-instances=4
