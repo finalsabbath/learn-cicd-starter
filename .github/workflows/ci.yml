@@ -20,6 +20,9 @@ jobs:
 
       - name: Go tests
         run: go test ./... --cover
-
+  style:
+    name: Style
+    runs-on: ubuntu-latest
+    steps:
       - name: Go style check
         run: test -z $(go fmt ./...)
